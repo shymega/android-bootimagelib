@@ -1,25 +1,15 @@
 [package]
-name = "android-bootimage"
+name = "android-bootimagelib"
 version = "0.1.0"
-authors = ["Jeroen Bollen <contact@jeroenbollen.eu>"]
+authors = ["Jeroen Bollen <contact@jeroenbollen.eu>", "Dom Rodriguez <shymega@shymega.org.uk>"]
 description = "A tool to handle android boot images. It currently only works for Samsung boot images."
-homepage = "https://gitlab.com/binero/android-bootimage"
-repository = "https://gitlab.com/binero/android-bootimage"
-readme = "Readme.md"
-keywords = ["android", "tool", "bootimage"]
-categories = ["command-line-utilities", "data-structures"]
+homepage = "https://gitlab.com/shymega/android-bootimagelib"
+repository = "https://gitlab.com/shymega/android-bootimagelib"
+readme = "README.md"
+keywords = ["android", "bootimage"]
 license = "Unlicense"
 
 [dependencies]
-byteorder = "1.1"
+byteorder = "1.4"
 quick-error = "1.2"
-colored = "1.5.2"
-humansize = "1.0"
-
-[dependencies.clap]
-version = "2.26"
-features = ["color"]
-
-[[bin]]
-name = "android-bootimage"
-doc = false
+humansize = "2.1"

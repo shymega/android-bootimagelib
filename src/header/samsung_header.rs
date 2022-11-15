@@ -3,19 +3,19 @@ use std::io::{Error as IoError, Read, Write};
 
 /// The size of the header, in bytes. This might not match up with the
 /// amount of bytes the structure consumes while in memory.
-pub const HEADER_SIZE: usize = 616;
-const MAGIC: [u8; MAGIC_SIZE] = [0x41, 0x4E, 0x44, 0x52, 0x4F, 0x49, 0x44, 0x21];
-pub const MAGIC_STR: &'static str = "ANDROID!";
-const MAGIC_SIZE: usize = 8;
+pub const SAMSUNG_HEADER_SIZE: usize = 616;
+const SAMSUNG_MAGIC: [u8; SAMSUNG_MAGIC_SIZE] = [0x41, 0x4E, 0x44, 0x52, 0x4F, 0x49, 0x44, 0x21];
+pub const SAMSUNG_MAGIC_STR: &'static str = "ANDROID!";
+const SAMSUNG_MAGIC_SIZE: usize = 8;
 const PRODUCT_NAME_SIZE: usize = 24;
 const BOOT_ARGUMENTS_SIZE: usize = 512;
 const UNIQUE_ID_SIZE: usize = 32;
 
 /// Contains a magic header.
 #[derive(Debug, Clone)]
-pub struct Header {
+pub struct SamsungHeader {
     /// Header magic. Used to make sure this is in fact a header.
-    pub magic: [u8; MAGIC_SIZE],
+    pub magic: [u8; SAMSUNG_MAGIC_SIZE],
     /// Ramdisk size, in bytes.
     pub kernel_size: u32,
     /// Address the ramdisk should be loaded to.
@@ -49,15 +49,15 @@ pub struct Header {
     pub unique_id: [u8; UNIQUE_ID_SIZE],
 }
 
-impl Header {
+impl SamsungHeader {
     /// Reads a header from the supplied source. This does not perform the
     /// magic check, and as a result cannot error.
-    pub fn parse(source: &[u8; HEADER_SIZE]) -> Self {
+    pub fn parse(source: &[u8; SAMSUNG_HEADER_SIZE]) -> Self {
         let mut source = &source[..];
 
-        Header {
+        SamsungHeader {
             magic: {
-                let mut buffer = [0; MAGIC_SIZE];
+                let mut buffer = [0; SAMSUNG_MAGIC_SIZE];
                 source.read_exact(&mut buffer).unwrap();
                 buffer
             },
@@ -91,9 +91,9 @@ impl Header {
     }
 
     pub fn read_from<R: Read>(source: &mut R) -> Result<Self, IoError> {
-        let mut buffer = [0; HEADER_SIZE];
+        let mut buffer = [0; SAMSUNG_HEADER_SIZE];
         source.read_exact(&mut buffer)?;
-        Ok(Header::parse(&buffer))
+        Ok(Self::parse(&buffer))
     }
 
     /// Writes this header to a `Write` target. Returns the amount of bytes
@@ -115,18 +115,18 @@ impl Header {
             target.write_all(ii)?;
         }
         target.write_all(&self.unique_id)?;
-        Ok(HEADER_SIZE)
+        Ok(SAMSUNG_HEADER_SIZE)
     }
 
     pub fn has_correct_magic(&self) -> bool {
-        self.magic == MAGIC_STR.as_bytes()
+        self.magic == SAMSUNG_MAGIC_STR.as_bytes()
     }
 }
 
-impl Default for Header {
-    fn default() -> Header {
-        Header {
-            magic: MAGIC,
+impl Default for SamsungHeader {
+    fn default() -> Self {
+        Self {
+            magic: SAMSUNG_MAGIC,
             kernel_size: 0,
             kernel_load_address: 0x10008000,
             ramdisk_size: 0,

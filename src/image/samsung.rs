@@ -1,4 +1,4 @@
-use Header;
+use crate::header::SamsungHeader as Header;
 use std::io::{Error as IoError, Read, Seek, Write};
 use std::path::Path;
 
@@ -201,29 +201,25 @@ impl BootImage {
         // Read all the different sections into memory.
         {
             let mut kernel = vec![0; header.kernel_size as usize];
-            source
-                .seek(SeekFrom::Start(boot_image.kernel_offset() as u64))?;
+            source.seek(SeekFrom::Start(boot_image.kernel_offset() as u64))?;
             source.read_exact(&mut kernel)?;
             boot_image.insert_kernel(kernel);
         }
         {
             let mut ramdisk = vec![0; header.ramdisk_size as usize];
-            source
-                .seek(SeekFrom::Start(boot_image.ramdisk_offset() as u64))?;
+            source.seek(SeekFrom::Start(boot_image.ramdisk_offset() as u64))?;
             source.read_exact(&mut ramdisk)?;
             boot_image.insert_ramdisk(ramdisk);
         }
         {
             let mut second_ramdisk = vec![0; header.second_size as usize];
-            source
-                .seek(SeekFrom::Start(boot_image.second_ramdisk_offset() as u64))?;
+            source.seek(SeekFrom::Start(boot_image.second_ramdisk_offset() as u64))?;
             source.read_exact(&mut second_ramdisk)?;
             boot_image.insert_second_ramdisk(second_ramdisk);
         }
         {
             let mut device_tree = vec![0; header.device_tree_size as usize];
-            source
-                .seek(SeekFrom::Start(boot_image.device_tree_offset() as u64))?;
+            source.seek(SeekFrom::Start(boot_image.device_tree_offset() as u64))?;
             source.read_exact(&mut device_tree)?;
             boot_image.insert_device_tree(device_tree);
         }
