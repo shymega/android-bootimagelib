@@ -4,6 +4,7 @@ use std::path::Path;
 
 /// A structure representing a boot image in memory. Used to modify the boot
 /// image through a convenient interface.
+#[derive(Debug, Clone)]
 pub struct BootImage {
     /// The header of this boot image.
     header: Header,
@@ -298,7 +299,7 @@ fn size_to_size_in_pages(size: usize, page_size: usize) -> usize {
 impl Default for BootImage {
     /// Creates a new default boot image, with no sections at all.
     fn default() -> Self {
-        BootImage {
+        Self {
             header: Header::default(),
             kernel: Vec::new(),
             ramdisk: Vec::new(),
